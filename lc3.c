@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #include "lc3.h"
 
+//current version
+
+
 // you can define a simple memory module here for this program
 unsigned short memory[32];   // 32 words of memory enough to store simple program
 
