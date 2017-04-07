@@ -16,7 +16,7 @@ int controller (CPU_p cpu) {
     // check to make sure both pointers are not NULL
     // do any initializations here
 	Register opcode, Rd, Rs1, Rs2, immed_offset;	// fields for the IR
-    int state = FETCH;
+    int state = FETCH, BEN;
     for (;;) {   // efficient endless loop
         switch (state) {
             case FETCH: // microstates 18, 33, 35 in the book

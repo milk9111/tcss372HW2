@@ -12,20 +12,25 @@
 
 #define NO_OF_REGISTERS 8
 
-#define OPCODE_FIELD 0xE000				// 1110 0000 0000 0000 - gets first three bits
-#define OPCODE_FIELD_SHIFT 13
-#define RD_FIELD 0x1C00					// 0001 1100 0000 0000 - gets Rd field bits
-#define RD_FIELD_SHIFT 10
-#define RS_FIELD 0x03800				// 0000 0011 1000 0000 - ges Rs field bits
-#define RS_FIELD_SHIFT 7
-#define IMMED_FIELD 0x007F				// 0000 0000 0111 1111 - gets immed field bits
-#define IMMED_FIELD_SHIFT 6
-#define BR_FIELD 0x1800					// 0001 1000 0000 0000 - gets branch field bits
-#define BR_FIELD_SHIFT 11
-#define IMMED11_FIELD 0x07FF			// 0000 0111 1111 1111 - gets immed 11 field bits
-#define IMMED11_FIELD_SHIFT 10
-#define HIGH_ORDER_BIT_VALUE 0x0070		// 0000 0000 0100 0000
-#define HIGH_ORDER_BIT_VALUE11 0X0700	// 0000 0100 0000 0000
+#define OPCODE_FIELD 0xF000				// 1111 0000 0000 0000 - gets first three bits
+#define OPCODE_FIELD_SHIFT 12
+#define RD_FIELD 0x0E00					// 0000 1110 0000 0000 - gets Rd field bits
+#define RD_FIELD_SHIFT 9
+#define RS1_FIELD 0x01C0				// 0000 0001 1100 0000 - gets Rs1 field bits
+#define RS1_FIELD_SHIFT 6
+#define RS2_FIELD 0x0007				// 0000 0000 0000 0111 - gets Rs2 field bits
+#define RS2_FIELD_SHIFT 0
+#define IMMED5_FIELD 0x003F				// 0000 0000 0011 1111 - gets immed5 field bits
+#define IMMED5_FIELD_SHIFT 5
+#define BR_FIELD 0x0E00					// 0000 1110 0000 0000 - gets branch field bits
+#define BR_FIELD_SHIFT 9
+#define OFFSET9_FIELD 0x01FF			// 0000 0001 1111 1111 - gets offset9 field bits
+#define OFFSET9_FIELD_SHIFT 8
+#define OFFSET11_FIELD 0x07FF			// 0000 0111 1111 1111 - gets offset11 field bits
+#define OFFSET11_FIELD_SHIFT 10
+#define HIGH_ORDER_BIT_VALUE 0x0020		// 0000 0000 0010 0000
+#define HIGH_ORDER_BIT_VALUE9 0x0100	// 0000 0001 0000 0000
+#define HIGH_ORDER_BIT_VALUE11 0x0700	// 0000 0100 0000 0000
 
 
 typedef unsigned short Register;
