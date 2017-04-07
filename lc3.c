@@ -37,6 +37,7 @@ int controller (CPU_p cpu) {
 				opcode = (cpu->ir & OPCODE_FIELD) >> OPCODE_FIELD_SHIFT;
 				Rd = (cpu->ir & RD_FIELD) >> RD_FIELD_SHIFT;
 				Rs1 = (cpu->ir & RS_FIELD) >> RS_FIELD_SHIFT;
+				
                 // get the fields out of the IR
                 // make sure opcode is in integer form
 				// hint: use four unsigned int variables, opcode, Rd, Rs, and immed7
