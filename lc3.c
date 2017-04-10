@@ -29,18 +29,20 @@ int controller (CPU_p cpu) {
     for (;;) {   // efficient endless loop
         switch (state) {
             case FETCH: // microstates 18, 33, 35 in the book
-                printf("Here in FETCH\n");
+                printf("Here in FETCH\n\n");
+				printf("Contents of PC = 0x%04X\n", cpu->pc);
 				cpu->mar = cpu->pc;
 				cpu->pc++;							//State 18
 				cpu->mdr = memory[cpu->mar];		//State 33
 				cpu->ir = cpu->mdr;					//State 35
 				
-				printf("Contents of PC = 0x%4X\n", cpu->pc);
-				printf("Contents of MAR = 0x%4X\n", cpu->mar);
-				printf("Contents of PC = 0x%4X\n", cpu->pc);
-				printf("Contents of M[MAR] = 0x%4X\n", memory[cpu->mar]);
-				printf("Contents of MDR = 0x%4X\n", cpu->mdr);
-                printf("Contents of IR = %04X\n", cpu->ir);
+				
+				printf("Contents of MAR = 0x%04X\n", cpu->mar);
+				printf("Contents of PC = 0x%04X\n", cpu->pc);
+				printf("Contents of M[MAR] = 0x%04X\n", memory[cpu->mar]);
+				printf("Contents of MDR = 0x%04X\n", cpu->mdr);
+                printf("Contents of IR = 0x%04X\n", cpu->ir);
+				//exit(0);
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                 // put printf statements in each state and microstate to see that it is working
  				//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -133,6 +135,9 @@ int controller (CPU_p cpu) {
                 state = EXECUTE;
                 break;
             case EXECUTE: // Note that ST does not have an execute microstate
+				if (cpu->ir == END) {
+					exit(0);
+				}
                 switch (opcode) {
                     // do what the opcode is for, e.g. ADD
                     // in case of TRAP: call trap(int trap_vector) routine, see below for TRAP x25 (HALT)
@@ -153,18 +158,18 @@ int controller (CPU_p cpu) {
 
 
 int main (int argc, char* argv[]) {
-	memory[0] = 0x3000;
-	memory[1] = 0x1642;
-	memory[2] = 0x1662;
-	memory[3] = 0x5642;
-	memory[4] = 0x566F;
-	memory[5] = 0x967F;
-	memory[6] = 0xF019;
-	memory[7] = 0x2004;
-	memory[8] = 0x3605;
-	memory[9] = 0xC000;
-	memory[10] = 0x0E14;
+	memory[0] = 0x1642;
+	memory[1] = 0x1662;
+	memory[2] = 0x5642;
+	memory[3] = 0x566F;
+	memory[4] = 0x967F;
+	memory[5] = 0xF019;
+	memory[6] = 0x2004;
+	memory[7] = 0x3605;
+	memory[8] = 0xC000;
+	memory[9] = 0x0E14;
 	CPU_p cpu = malloc (sizeof(CPU_s));
+	cpu->pc = 0;
 	controller (cpu);
 	return 0;
 }
