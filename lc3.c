@@ -12,11 +12,20 @@
 // you can define a simple memory module here for this program
 unsigned short memory[32];   // 32 words of memory enough to store simple program
 
+
+
+int sext(int immed7) {
+	if (HIGH_ORDER_BIT_VALUE & immed7) return (immed7 | 0xFFC0);
+	else return immed7;
+}
+
+
 int controller (CPU_p cpu) {
     // check to make sure both pointers are not NULL
     // do any initializations here
-	Register opcode, Rd, Rs1, Rs2, immed_offset;	// fields for the IR
-    int state = FETCH, BEN;
+	Register opcode, Rd, Rs1, Rs2, immed5, offset9;	// fields for the IR
+	Register effective_addr, trapVector8, BaseR;
+    int state = FETCH, BEN, n, z, p;
     for (;;) {   // efficient endless loop
         switch (state) {
             case FETCH: // microstates 18, 33, 35 in the book
@@ -25,8 +34,12 @@ int controller (CPU_p cpu) {
 				cpu->pc++;							//State 18
 				cpu->mdr = memory[cpu->mar];		//State 33
 				cpu->ir = cpu->mdr;					//State 35
-                // get memory[PC] into IR - memory is a global array
-                // increment PC
+				
+				printf("Contents of PC = 0x%4X\n", cpu->pc);
+				printf("Contents of MAR = 0x%4X\n", cpu->mar);
+				printf("Contents of PC = 0x%4X\n", cpu->pc);
+				printf("Contents of M[MAR] = 0x%4X\n", memory[cpu->mar]);
+				printf("Contents of MDR = 0x%4X\n", cpu->mdr);
                 printf("Contents of IR = %04X\n", cpu->ir);
 				//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
                 // put printf statements in each state and microstate to see that it is working
@@ -35,8 +48,38 @@ int controller (CPU_p cpu) {
                 break;
             case DECODE: // microstate 32
 				opcode = (cpu->ir & OPCODE_FIELD) >> OPCODE_FIELD_SHIFT;
-				Rd = (cpu->ir & RD_FIELD) >> RD_FIELD_SHIFT;
-				Rs1 = (cpu->ir & RS_FIELD) >> RS_FIELD_SHIFT;
+				switch (opcode) {
+					case ADD:
+					case AND:
+						Rd = (cpu->ir & RD_FIELD) >> RD_FIELD_SHIFT;
+						Rs1 = (cpu->ir & RS1_FIELD) >> RS1_FIELD_SHIFT;
+						if (!(HIGH_ORDER_BIT_VALUE & cpu->ir)){	
+							Rs2 = (cpu->ir & RS2_FIELD) >> RS2_FIELD_SHIFT;	
+						} else {
+							immed5 = (cpu->ir & IMMED5_FIELD) >> IMMED5_FIELD_SHIFT;
+						}
+						break;
+					case NOT:
+						Rd = (cpu->ir & RD_FIELD) >> RD_FIELD_SHIFT;
+						Rs1 = (cpu->ir & RS1_FIELD) >> RS1_FIELD_SHIFT;
+						break;
+					case TRAP:
+						trapVector8 = (cpu->ir & TRAP_VECTOR8_FIELD) >> TRAP_VECTOR8_FIELD_SHIFT;
+						break;
+					case LD:
+						Rd = (cpu->ir & RD_FIELD) >> RD_FIELD_SHIFT;
+						offset9 = (cpu->ir & OFFSET9_FIELD) >> OFFSET9_FIELD_SHIFT;
+						break;
+					case ST:
+						Rs1 = (cpu->ir & RD_FIELD) >> RD_FIELD_SHIFT;
+						offset9 = (cpu->ir & OFFSET9_FIELD) >> OFFSET9_FIELD_SHIFT;
+						break;
+					case JMP:
+						BaseR = (cpu->ir & RS1_FIELD) >> RS1_FIELD_SHIFT;
+						break;
+					case BR:
+						offset9 = (cpu->ir & OFFSET9_FIELD) >> OFFSET9_FIELD_SHIFT;
+				}
 				
                 // get the fields out of the IR
                 // make sure opcode is in integer form
@@ -46,6 +89,37 @@ int controller (CPU_p cpu) {
                 break;
             case EVAL_ADDR: // Look at the LD instruction to see microstate 2 example
                 switch (opcode) {
+					case ADI:
+					case ANI:
+						immed5 = sext (IMMED5_FIELD & cpu->ir);
+						break;
+					case TRAP:
+						break;
+						
+					/*
+					case ADD:
+					case NAND:
+						Rd = (RD_FIELD & cpu->IR) >> RD_FIELD_SHIFT;
+						Rs = (RS_FIELD & cpu->IR) >> RS_FIELD_SHIFT;
+						break;
+					case ADI:
+						immed = sext(IMMED_FIELD & cpu->IR);
+						Rs = (RS_FIELD & cpu->IR) >> RS_FIELD_SHIFT;
+						break;
+					case LDI:
+						immed = sext(IMMED_FIELD & cpu->IR);
+						cpu->MAR = immed;
+						break;
+					case LD:
+					case ST:
+						effective_addr = Rs + sext(IMMED_FIELD & cpu->IR);
+						cpu->MAR = effective_addr;
+						break;
+					case BR:
+						effective_addr = cpu->PC + sext11(IMMED11_FIELD & cpu->IR);
+						break;
+					case TRAP: break;
+					*/
                 // different opcodes require different handling
                 // compute effective address, e.g. add sext(immed7) to register
                 }
@@ -79,7 +153,19 @@ int controller (CPU_p cpu) {
 
 
 int main (int argc, char* argv[]) {
+	memory[0] = 0x3000;
+	memory[1] = 0x1642;
+	memory[2] = 0x1662;
+	memory[3] = 0x5642;
+	memory[4] = 0x566F;
+	memory[5] = 0x967F;
+	memory[6] = 0xF019;
+	memory[7] = 0x2004;
+	memory[8] = 0x3605;
+	memory[9] = 0xC000;
+	memory[10] = 0x0E14;
 	CPU_p cpu = malloc (sizeof(CPU_s));
+	controller (cpu);
 	return 0;
 }
 

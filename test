@@ -1,0 +1,13 @@
+
+		.ORIG 	x3000
+		ADD	R3, R1, R2
+		ADD	R3, R1, #2
+		AND	R3, R1, R2
+		AND	R3, R1, #15
+		NOT 	R3, R1
+		TRAP	#25
+		LD	R0, x0004
+		ST	R3, x0005
+		JMP	R0
+		BRnzp	#20
+		.END
