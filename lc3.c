@@ -14,9 +14,15 @@ unsigned short memory[32];   // 32 words of memory enough to store simple progra
 
 
 
-int sext(int immed7) {
-	if (HIGH_ORDER_BIT_VALUE & immed7) return (immed7 | 0xFFC0);
-	else return immed7;
+int sext5(int immed5) {
+	if (HIGH_ORDER_BIT_VALUE & immed5) return (immed5 | 0xFFC0);
+	else return immed5;
+}
+
+
+int sext9(int offset9) {
+	if (HIGH_ORDER_BIT_VALUE9 & offset9) return (offset9 | 0xFD00);
+	else return offset9;
 }
 
 
@@ -49,38 +55,54 @@ int controller (CPU_p cpu) {
                state = DECODE;
                 break;
             case DECODE: // microstate 32
+			printf("\nHere in DECODE\n\n");
 				opcode = (cpu->ir & OPCODE_FIELD) >> OPCODE_FIELD_SHIFT;
 				switch (opcode) {
 					case ADD:
 					case AND:
 						Rd = (cpu->ir & RD_FIELD) >> RD_FIELD_SHIFT;
 						Rs1 = (cpu->ir & RS1_FIELD) >> RS1_FIELD_SHIFT;
+						printf("Contents of Rd = %d\n", Rd);
+						printf("Contents of Rs1 = %d\n", Rs1);
 						if (!(HIGH_ORDER_BIT_VALUE & cpu->ir)){	
 							Rs2 = (cpu->ir & RS2_FIELD) >> RS2_FIELD_SHIFT;	
+							printf("Contents of Rs2 = %d\n", Rs2);
 						} else {
 							immed5 = (cpu->ir & IMMED5_FIELD) >> IMMED5_FIELD_SHIFT;
+							immed5 = sext5(IMMED5_FIELD & cpu->ir);
+							printf("Contents of immed5 = %d\n", immed5);
 						}
 						break;
 					case NOT:
 						Rd = (cpu->ir & RD_FIELD) >> RD_FIELD_SHIFT;
 						Rs1 = (cpu->ir & RS1_FIELD) >> RS1_FIELD_SHIFT;
+						printf("Contents of Rd = %d\n", Rd);
+						printf("Contents of Rs = %d\n", Rs1);
 						break;
 					case TRAP:
 						trapVector8 = (cpu->ir & TRAP_VECTOR8_FIELD) >> TRAP_VECTOR8_FIELD_SHIFT;
+						printf("Contents of Trap Vector 8 = %d\n", trapVector8);
 						break;
 					case LD:
 						Rd = (cpu->ir & RD_FIELD) >> RD_FIELD_SHIFT;
 						offset9 = (cpu->ir & OFFSET9_FIELD) >> OFFSET9_FIELD_SHIFT;
+						printf("Contents of Rd = %d\n", Rd);
+						printf("Contents of PC Offset 9 = %d\n", offset9);
 						break;
 					case ST:
 						Rs1 = (cpu->ir & RD_FIELD) >> RD_FIELD_SHIFT;
 						offset9 = (cpu->ir & OFFSET9_FIELD) >> OFFSET9_FIELD_SHIFT;
+						printf("Contents of Rs = %d\n", Rs1);
+						printf("Contents of PC Offset 9 = %d\n", offset9);
 						break;
 					case JMP:
 						BaseR = (cpu->ir & RS1_FIELD) >> RS1_FIELD_SHIFT;
+						printf("Contents of BaseR = %d\n", BaseR);
 						break;
 					case BR:
 						offset9 = (cpu->ir & OFFSET9_FIELD) >> OFFSET9_FIELD_SHIFT;
+						printf("Contents of PC Offset 9 = %d\n", offset9);
+						break;
 				}
 				
                 // get the fields out of the IR
@@ -90,41 +112,17 @@ int controller (CPU_p cpu) {
                 state = EVAL_ADDR;
                 break;
             case EVAL_ADDR: // Look at the LD instruction to see microstate 2 example
+				printf ("\nHere in EVAL_ADDR\n\n");
                 switch (opcode) {
-					case ADI:
-					case ANI:
-						immed5 = sext (IMMED5_FIELD & cpu->ir);
-						break;
-					case TRAP:
-						break;
-						
-					/*
-					case ADD:
-					case NAND:
-						Rd = (RD_FIELD & cpu->IR) >> RD_FIELD_SHIFT;
-						Rs = (RS_FIELD & cpu->IR) >> RS_FIELD_SHIFT;
-						break;
-					case ADI:
-						immed = sext(IMMED_FIELD & cpu->IR);
-						Rs = (RS_FIELD & cpu->IR) >> RS_FIELD_SHIFT;
-						break;
-					case LDI:
-						immed = sext(IMMED_FIELD & cpu->IR);
-						cpu->MAR = immed;
-						break;
 					case LD:
 					case ST:
-						effective_addr = Rs + sext(IMMED_FIELD & cpu->IR);
-						cpu->MAR = effective_addr;
+						cpu->mar = cpu->pc + sext9(OFFSET9_FIELD & cpu->ir);
 						break;
-					case BR:
-						effective_addr = cpu->PC + sext11(IMMED11_FIELD & cpu->IR);
+					case TRAP:
+						cpu->mar = TRAP_VECTOR8_FIELD & cpu->ir;
 						break;
-					case TRAP: break;
-					*/
-                // different opcodes require different handling
-                // compute effective address, e.g. add sext(immed7) to register
                 }
+				printf ("Contents of MAR = %d\n", cpu->mar);
                 state = FETCH_OP;
                 break;
             case FETCH_OP: // Look at ST. Microstate 23 example of getting a value out of a register
@@ -152,6 +150,7 @@ int controller (CPU_p cpu) {
                 state = FETCH;
                 break;
         }
+		printf ("\n");
     }
 	return 0;
 }
