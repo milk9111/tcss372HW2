@@ -1,5 +1,5 @@
 /*
-	Author: Connor Lundberg
+	Author: Connor Lundberg, James Roberts
 	Date: 4/4/2017
 */
 
