@@ -1,6 +1,6 @@
 /*
 	Author: Connor Lundberg, James Roberts
-	Date: 4/4/2017
+	Date: 4/14/2017
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,7 +12,7 @@
 // you can define a simple memory module here for this program
 unsigned short memory[32];   // 32 words of memory enough to store simple program
 
-
+// 
 void trap(int trap_vector) {
 	//if (trap_vector == 0x0020) { //GETC
 	//} else if (trap_vector == 0x0021) { //OUT
@@ -165,17 +165,17 @@ int controller (CPU_p cpu) {
                 switch (opcode) {
                     // do what the opcode is for, e.g. ADD
                     // in case of TRAP: call trap(int trap_vector) routine, see below for TRAP x25 (HALT)
-					case ADD:
+					case ADD: //state 1 
 						printf("ADD\r\n");
 						//DR<-SR1 + OP2
 						//set CC
 						cpu->reg_file[Rd] = cpu->reg_file[Rs1] + cpu->reg_file[Rs2];
 						printf ("Executed DR = SR1 + SR2\r\n");
-						if (Rd > 0) {
+						if (cpu->reg_file[Rd] > 0) {
 							cpu->n = 0;
 							cpu->z = 0;
 							cpu->p = 1;
-						} else if (Rd == 0) {
+						} else if (cpu->reg_file[Rd] == 0) {
 							cpu->n = 0;
 							cpu->z = 1;
 							cpu->p = 0;
@@ -185,14 +185,14 @@ int controller (CPU_p cpu) {
 							cpu->p = 0;
 						}
 						break;
-					case AND:
+					case AND: //state 5
 						printf("\r\nAND\r\n");
 						cpu->reg_file[Rd] = cpu->reg_file[Rs1] & cpu->reg_file[Rs2];
-						if (Rd > 0) {
+						if (cpu->reg_file[Rd] > 0) {
 							cpu->n = 0;
 							cpu->z = 0;
 							cpu->p = 1;
-						} else if (Rd == 0) {
+						} else if (cpu->reg_file[Rd] == 0) {
 							cpu->n = 0;
 							cpu->z = 1;
 							cpu->p = 0;
@@ -203,14 +203,14 @@ int controller (CPU_p cpu) {
 						}
 						printf ("Executed DR = SR1 & SR2\r\n");
 						break;
-					case NOT:
+					case NOT: // state 9
 						printf("NOT\r\n");
 						cpu->reg_file[Rd] = !cpu->reg_file[Rs1];
-						if (Rd > 0) {
+						if (cpu->reg_file[Rd] > 0) {
 							cpu->n = 0;
 							cpu->z = 0;
 							cpu->p = 1;
-						} else if (Rd == 0) {
+						} else if (cpu->reg_file[Rd] == 0) {
 							cpu->n = 0;
 							cpu->z = 1;
 							cpu->p = 0;
@@ -221,19 +221,19 @@ int controller (CPU_p cpu) {
 						}
 						printf ("Executed DR = SR\r\n");
 						break;
-					case TRAP:
+					case TRAP: // combination of states 28 and 30 for this simulation
 						printf("TRAP\r\n");
 						printf("Executed Trap Vector #%d\r\n", trapVector8);
 						trap(cpu->mar);
 						break;
-					case BR:
-						if (BEN) {
-							printf("\r\nBR\r\n");
+					case BR: 
+						if (BEN) { // if test is state 0
+							printf("\r\nBR\r\n"); // state 22 PC <- PC + off9
 							printf ("Executed PC = PC + OFFSET9\r\n");
 							cpu->pc = cpu->pc + sext9(offset9);
 						}
 						break;
-					case JMP:
+					case JMP: //state 12
 						printf("\r\nJMP\r\n");
 						printf ("Executed PC = BaseR\r\n");
 						cpu->pc = BaseR;
@@ -245,18 +245,18 @@ int controller (CPU_p cpu) {
             case STORE: // Look at ST. Microstate 16 is the store to memory
 				printf ("\r\nHere in STORE\r\n\r\n");
                 switch (opcode) {
-					case ST:
+					case ST: // state 16
 						memory[cpu->mar] = cpu->mdr;
 						printf("Stored MDR into M[MAR]\r\n");
 						break;
-					case LD:
+					case LD: // state 27
 						Rd = cpu->mdr;
 						printf("Stored MDR into DR\r\n");
-						if (Rd > 0) {
+						if (cpu->reg_file[Rd] > 0) {
 							cpu->n = 0;
 							cpu->z = 0;
 							cpu->p = 1;
-						} else if (Rd == 0) {
+						} else if (cpu->reg_file[Rd] == 0) {
 							cpu->n = 0;
 							cpu->z = 1;
 							cpu->p = 0;
@@ -267,7 +267,7 @@ int controller (CPU_p cpu) {
 						}
 						break;
 					case TRAP:
-						//state 30?
+						//state 30
 						//cpu->pc = cpu->mdr;
 						/*
 							This is what it would do in a full simulation.
