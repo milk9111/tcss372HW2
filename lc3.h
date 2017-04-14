@@ -1,6 +1,6 @@
 /*
 	Author: Connor Lundberg, James Roberts
-	Date: 4/4/2017
+	Date: 4/14/2017
 */
 
 #define FETCH 0
@@ -31,7 +31,7 @@
 #define RS1_FIELD_SHIFT 6
 #define RS2_FIELD 0x0007				// 0000 0000 0000 0111 - gets Rs2 field bits
 #define RS2_FIELD_SHIFT 0
-#define IMMED5_FIELD 0x003F				// 0000 0000 0011 1111 - gets immed5 field bits
+#define IMMED5_FIELD 0x001F				// 0000 0000 0011 1111 - gets immed5 field bits
 #define IMMED5_FIELD_SHIFT 0
 #define BR_FIELD 0x0E00					// 0000 1110 0000 0000 - gets branch field bits
 #define BR_FIELD_SHIFT 9

@@ -1,6 +1,10 @@
 /*
 	Author: Connor Lundberg, James Roberts
 	Date: 4/14/2017
+	
+	The first version of our LC3 personal simulation. It takes a single command
+	and runs it through the controller, terminating with a HALT trap. We do this
+	to end the loop and also to cut out the HALT trap test.
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,9 +14,11 @@
 
 
 // you can define a simple memory module here for this program
-unsigned short memory[32];   // 32 words of memory enough to store simple program
+unsigned int memory[32];   // 32 words of memory enough to store simple program
 
-// 
+
+// This is the trap function that handles trap vectors. Acts as 
+// the trap vector table for now. Currently exits the HALT trap command.
 void trap(int trap_vector) {
 	//if (trap_vector == 0x0020) { //GETC
 	//} else if (trap_vector == 0x0021) { //OUT
@@ -25,19 +31,23 @@ void trap(int trap_vector) {
 }
 
 
+// This is the sext for the immed5. 
 int sext5(int immed5) {
-	if (HIGH_ORDER_BIT_VALUE & immed5) return (immed5 | 0xFFC0);
+	if (HIGH_ORDER_BIT_VALUE & immed5) return (immed5 | 0xFFF0);
 	else return immed5;
 }
 
 
+// This is the sext for the PCOffset9.
 int sext9(int offset9) {
 	if (HIGH_ORDER_BIT_VALUE9 & offset9) return (offset9 | 0xFD00);
 	else return offset9;
 }
 
 
-int controller (CPU_p cpu) {
+// This is the main controller for our CPU. It is complete with all microstates
+// defined for this project.
+int controller (CPU_p cpu, ALU_p alu) {
     // check to make sure both pointers are not NULL
     // do any initializations here
 	Register opcode, Rd, Rs1, Rs2, immed5, offset9;	// fields for the IR
@@ -141,13 +151,27 @@ int controller (CPU_p cpu) {
 				switch (opcode) {
                     // get operands out of registers into A, B of ALU
                     // or get memory for load instr.
+					case ADD:
+					case AND:
+						if (!(HIGH_ORDER_BIT_VALUE & cpu->ir)) {
+							alu->b = cpu->reg_file[Rs2];
+						} else {
+							alu->b = sext5 (immed5);
+						}
+						printf ("ALU Reg B = %d\r\n", alu->b);
+					case NOT:
+						alu->a = cpu->reg_file[Rs1];
+						printf ("ALU Reg A = %d\r\n", alu->a);
+						break;
 					case ST:
 						// state 23 MDR <- SR
 						cpu->mdr = Rd;
+						printf ("Contents of MDR = %d\r\n", cpu->mdr);
 						break;
 					case LD:
 						// state 25 MDR <- M[MAR]
 						cpu->mdr = memory[cpu->mar];
+						printf ("Contents of MDR = %d\r\n", cpu->mdr);
 						break;
 					case TRAP:
 						//state 28 PC<-MDR
@@ -169,13 +193,14 @@ int controller (CPU_p cpu) {
 						printf("ADD\r\n");
 						//DR<-SR1 + OP2
 						//set CC
-						cpu->reg_file[Rd] = cpu->reg_file[Rs1] + cpu->reg_file[Rs2];
-						printf ("Executed DR = SR1 + SR2\r\n");
-						if (cpu->reg_file[Rd] > 0) {
+						alu->r = alu->a + alu->b;
+						printf ("ALU Reg A = %d, ALU Reg B = %d\r\n", alu->a, alu->b);
+						printf ("Executed ALU Reg R = ALU Reg A + ALU Reg B\r\n");
+						if (alu->r > 0) {
 							cpu->n = 0;
 							cpu->z = 0;
 							cpu->p = 1;
-						} else if (cpu->reg_file[Rd] == 0) {
+						} else if (alu->r == 0) {
 							cpu->n = 0;
 							cpu->z = 1;
 							cpu->p = 0;
@@ -187,12 +212,12 @@ int controller (CPU_p cpu) {
 						break;
 					case AND: //state 5
 						printf("\r\nAND\r\n");
-						cpu->reg_file[Rd] = cpu->reg_file[Rs1] & cpu->reg_file[Rs2];
-						if (cpu->reg_file[Rd] > 0) {
+						alu->r = alu->a & alu->b;
+						if (alu->r > 0) {
 							cpu->n = 0;
 							cpu->z = 0;
 							cpu->p = 1;
-						} else if (cpu->reg_file[Rd] == 0) {
+						} else if (alu->r == 0) {
 							cpu->n = 0;
 							cpu->z = 1;
 							cpu->p = 0;
@@ -201,16 +226,17 @@ int controller (CPU_p cpu) {
 							cpu->z = 0;
 							cpu->p = 0;
 						}
-						printf ("Executed DR = SR1 & SR2\r\n");
+						printf ("ALU Reg A = %d, ALU Reg B = %d\r\n", alu->a, alu->b);
+						printf ("Executed ALU Reg R = ALU Reg A & ALU Reg B\r\n");
 						break;
 					case NOT: // state 9
 						printf("NOT\r\n");
-						cpu->reg_file[Rd] = !cpu->reg_file[Rs1];
-						if (cpu->reg_file[Rd] > 0) {
+						alu->r = ~alu->a;
+						if (alu->r > 0) {
 							cpu->n = 0;
 							cpu->z = 0;
 							cpu->p = 1;
-						} else if (cpu->reg_file[Rd] == 0) {
+						} else if (alu->r == 0) {
 							cpu->n = 0;
 							cpu->z = 1;
 							cpu->p = 0;
@@ -219,7 +245,8 @@ int controller (CPU_p cpu) {
 							cpu->z = 0;
 							cpu->p = 0;
 						}
-						printf ("Executed DR = SR\r\n");
+						printf ("ALU Reg A = %d\r\n", alu->a);
+						printf ("Executed ALU Reg R = !ALU Reg A\r\n");
 						break;
 					case TRAP: // combination of states 28 and 30 for this simulation
 						printf("TRAP\r\n");
@@ -245,6 +272,12 @@ int controller (CPU_p cpu) {
             case STORE: // Look at ST. Microstate 16 is the store to memory
 				printf ("\r\nHere in STORE\r\n\r\n");
                 switch (opcode) {
+					case ADD:
+					case AND:
+					case NOT:
+						cpu->reg_file[Rd] = alu->r;
+						printf ("Stored ALU Reg R into DR %d\r\n", Rd);
+						break;
 					case ST: // state 16
 						memory[cpu->mar] = cpu->mdr;
 						printf("Stored MDR into M[MAR]\r\n");
@@ -277,10 +310,10 @@ int controller (CPU_p cpu) {
                 }
                 // do any clean up here in prep for the next complete cycle
                 state = FETCH;
-				printf("Value of R0: %d\r\n", cpu->reg_file[0]);
 				printf("Value of R1: %d\r\n", cpu->reg_file[1]);
 				printf("Value of R2: %d\r\n", cpu->reg_file[2]);
 				printf("Value of R3: %d\r\n", cpu->reg_file[3]);
+				printf("n = %d, z = %d, p = %d\r\n", cpu->n, cpu->z, cpu->p);
 				printf ("\r\n\r\n");
                 break;
         }
@@ -289,34 +322,27 @@ int controller (CPU_p cpu) {
 }
 
 
+// This is our main function that takes a single hex command from the command line
+// and runs that in the controller. We use the trap command HALT to stop the program after
+// the command runs.
 int main (int argc, char* argv[]) {
-	/*memory[0] = 0x1642;
-	memory[1] = 0x1662;
-	memory[2] = 0x5642;
-	memory[3] = 0x566F;
-	memory[4] = 0x967F;
-	//memory[5] = 0xF019;
-	memory[5] = 0x967E;
-	memory[6] = 0x2004;
-	memory[7] = 0x3605;
-	//memory[7] = 0xC000;
-	memory[8] = 0xF019;
-	*/
 	char *temp;
+	printf ("\r\n\r\n\r\n\r\nValue to Run: %s\r\n", argv[1]);
 	memory[0] = strtol(argv[1], &temp, 16);
 	memory[1] = 0xF019;
 	CPU_p cpu = malloc (sizeof(CPU_s));
+	ALU_p alu = malloc (sizeof(ALU_s));
 	cpu->n = 1;
-	cpu->reg_file[0] = 12;
-	cpu->reg_file[1] = 4;
-	cpu->reg_file[2] = 19;
-	cpu->reg_file[3] = 5;
+	cpu->reg_file[1] = 5;
+	cpu->reg_file[2] = 15;
+	cpu->reg_file[3] = 0;
 	cpu->pc = 0;
-	printf("Value of R0: %d\r\n", cpu->reg_file[0]);
+	cpu->n = 0, cpu->z = 0, cpu->p = 0;
 	printf("Value of R1: %d\r\n", cpu->reg_file[1]);
 	printf("Value of R2: %d\r\n", cpu->reg_file[2]);
 	printf("Value of R3: %d\r\n", cpu->reg_file[3]);
-	controller (cpu);
+	printf("n = %d, z = %d, p = %d\r\n", cpu->n, cpu->z, cpu->p);
+	controller (cpu, alu);
 	return 0;
 }
 

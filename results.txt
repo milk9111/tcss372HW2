@@ -1,7 +1,13 @@
-Value of R0: 12
-Value of R1: 4
-Value of R2: 19
-Value of R3: 5
+Connor Lundberg, James Roberts
+4/14/2017
+
+
+
+Value to Run: 0x1642
+Value of R1: 5
+Value of R2: 15
+Value of R3: 0
+n = 0, z = 0, p = 0
 Here in FETCH
 
 Contents of PC = 0x0000
@@ -23,18 +29,308 @@ Contents of MAR = 0
 
 Here in FETCH_OP
 
+ALU Reg B = 15
+ALU Reg A = 5
 
 Here in EXECUTE
 
 ADD
-Executed DR = SR1 + SR2
+ALU Reg A = 5, ALU Reg B = 15
+Executed ALU Reg R = ALU Reg A + ALU Reg B
 
 Here in STORE
 
-Value of R0: 12
-Value of R1: 4
-Value of R2: 19
-Value of R3: 23
+Stored ALU Reg R into DR 3
+Value of R1: 5
+Value of R2: 15
+Value of R3: 20
+n = 0, z = 0, p = 1
+
+
+Here in FETCH
+
+Contents of PC = 0x0001
+Contents of MAR = 0x0001
+Contents of PC = 0x0002
+Contents of M[MAR] = 0xF019
+Contents of MDR = 0xF019
+Contents of IR = 0xF019
+
+Here in DECODE
+
+Contents of Trap Vector 8 = 25
+
+Here in EVAL_ADDR
+
+Contents of MAR = 25
+
+Here in FETCH_OP
+
+
+Here in EXECUTE
+
+TRAP
+Executed Trap Vector #25
+
+
+Value to Run: 0x1662
+Value of R1: 5
+Value of R2: 15
+Value of R3: 0
+n = 0, z = 0, p = 0
+Here in FETCH
+
+Contents of PC = 0x0000
+Contents of MAR = 0x0000
+Contents of PC = 0x0001
+Contents of M[MAR] = 0x1662
+Contents of MDR = 0x1662
+Contents of IR = 0x1662
+
+Here in DECODE
+
+Contents of Rd = 3
+Contents of Rs1 = 1
+Contents of immed5 = 2
+
+Here in EVAL_ADDR
+
+Contents of MAR = 0
+
+Here in FETCH_OP
+
+ALU Reg B = 2
+ALU Reg A = 5
+
+Here in EXECUTE
+
+ADD
+ALU Reg A = 5, ALU Reg B = 2
+Executed ALU Reg R = ALU Reg A + ALU Reg B
+
+Here in STORE
+
+Stored ALU Reg R into DR 3
+Value of R1: 5
+Value of R2: 15
+Value of R3: 7
+n = 0, z = 0, p = 1
+
+
+Here in FETCH
+
+Contents of PC = 0x0001
+Contents of MAR = 0x0001
+Contents of PC = 0x0002
+Contents of M[MAR] = 0xF019
+Contents of MDR = 0xF019
+Contents of IR = 0xF019
+
+Here in DECODE
+
+Contents of Trap Vector 8 = 25
+
+Here in EVAL_ADDR
+
+Contents of MAR = 25
+
+Here in FETCH_OP
+
+
+Here in EXECUTE
+
+TRAP
+Executed Trap Vector #25
+
+
+
+
+Value to Run: 0x5642
+Value of R1: 5
+Value of R2: 15
+Value of R3: 0
+n = 0, z = 0, p = 0
+Here in FETCH
+
+Contents of PC = 0x0000
+Contents of MAR = 0x0000
+Contents of PC = 0x0001
+Contents of M[MAR] = 0x5642
+Contents of MDR = 0x5642
+Contents of IR = 0x5642
+
+Here in DECODE
+
+Contents of Rd = 3
+Contents of Rs1 = 1
+Contents of Rs2 = 2
+
+Here in EVAL_ADDR
+
+Contents of MAR = 0
+
+Here in FETCH_OP
+
+ALU Reg B = 15
+ALU Reg A = 5
+
+Here in EXECUTE
+
+
+AND
+ALU Reg A = 5, ALU Reg B = 15
+Executed ALU Reg R = ALU Reg A & ALU Reg B
+
+Here in STORE
+
+Stored ALU Reg R into DR 3
+Value of R1: 5
+Value of R2: 15
+Value of R3: 5
+n = 0, z = 0, p = 1
+
+
+Here in FETCH
+
+Contents of PC = 0x0001
+Contents of MAR = 0x0001
+Contents of PC = 0x0002
+Contents of M[MAR] = 0xF019
+Contents of MDR = 0xF019
+Contents of IR = 0xF019
+
+Here in DECODE
+
+Contents of Trap Vector 8 = 25
+
+Here in EVAL_ADDR
+
+Contents of MAR = 25
+
+Here in FETCH_OP
+
+
+Here in EXECUTE
+
+TRAP
+Executed Trap Vector #25
+
+
+
+
+Value to Run: 0x566F
+Value of R1: 5
+Value of R2: 15
+Value of R3: 0
+n = 0, z = 0, p = 0
+Here in FETCH
+
+Contents of PC = 0x0000
+Contents of MAR = 0x0000
+Contents of PC = 0x0001
+Contents of M[MAR] = 0x566F
+Contents of MDR = 0x566F
+Contents of IR = 0x566F
+
+Here in DECODE
+
+Contents of Rd = 3
+Contents of Rs1 = 1
+Contents of immed5 = 15
+
+Here in EVAL_ADDR
+
+Contents of MAR = 0
+
+Here in FETCH_OP
+
+ALU Reg B = 15
+ALU Reg A = 5
+
+Here in EXECUTE
+
+
+AND
+ALU Reg A = 5, ALU Reg B = 15
+Executed ALU Reg R = ALU Reg A & ALU Reg B
+
+Here in STORE
+
+Stored ALU Reg R into DR 3
+Value of R1: 5
+Value of R2: 15
+Value of R3: 5
+n = 0, z = 0, p = 1
+
+
+Here in FETCH
+
+Contents of PC = 0x0001
+Contents of MAR = 0x0001
+Contents of PC = 0x0002
+Contents of M[MAR] = 0xF019
+Contents of MDR = 0xF019
+Contents of IR = 0xF019
+
+Here in DECODE
+
+Contents of Trap Vector 8 = 25
+
+Here in EVAL_ADDR
+
+Contents of MAR = 25
+
+Here in FETCH_OP
+
+
+Here in EXECUTE
+
+TRAP
+Executed Trap Vector #25
+
+
+
+
+Value to Run: 0x967F
+Value of R1: 5
+Value of R2: 15
+Value of R3: 0
+n = 0, z = 0, p = 0
+Here in FETCH
+
+Contents of PC = 0x0000
+Contents of MAR = 0x0000
+Contents of PC = 0x0001
+Contents of M[MAR] = 0x967F
+Contents of MDR = 0x967F
+Contents of IR = 0x967F
+
+Here in DECODE
+
+Contents of Rd = 3
+Contents of Rs = 1
+
+Here in EVAL_ADDR
+
+Contents of MAR = 0
+
+Here in FETCH_OP
+
+ALU Reg A = 5
+
+Here in EXECUTE
+
+NOT
+ALU Reg A = 5
+Executed ALU Reg R = !ALU Reg A
+
+Here in STORE
+
+Stored ALU Reg R into DR 3
+Value of R1: 5
+Value of R2: 15
+Value of R3: 65530
+n = 0, z = 0, p = 1
 
 
 Here in FETCH
