@@ -263,7 +263,8 @@ int controller (CPU_p cpu, ALU_p alu) {
 					case JMP: //state 12
 						printf("\r\nJMP\r\n");
 						printf ("Executed PC = BaseR\r\n");
-						cpu->pc = BaseR;
+						
+						cpu->pc = cpu->reg_file[BaseR];
 						break;
                 }
 				
@@ -283,7 +284,7 @@ int controller (CPU_p cpu, ALU_p alu) {
 						printf("Stored MDR into M[MAR]\r\n");
 						break;
 					case LD: // state 27
-						Rd = cpu->mdr;
+						cpu->reg_file[Rd] = cpu->mdr;
 						printf("Stored MDR into DR\r\n");
 						if (cpu->reg_file[Rd] > 0) {
 							cpu->n = 0;
@@ -310,6 +311,7 @@ int controller (CPU_p cpu, ALU_p alu) {
                 }
                 // do any clean up here in prep for the next complete cycle
                 state = FETCH;
+				printf("Value of R0: %d\r\n", cpu->reg_file[0]);
 				printf("Value of R1: %d\r\n", cpu->reg_file[1]);
 				printf("Value of R2: %d\r\n", cpu->reg_file[2]);
 				printf("Value of R3: %d\r\n", cpu->reg_file[3]);
@@ -329,15 +331,19 @@ int main (int argc, char* argv[]) {
 	char *temp;
 	printf ("\r\n\r\n\r\n\r\nValue to Run: %s\r\n", argv[1]);
 	memory[0] = strtol(argv[1], &temp, 16);
-	memory[1] = 0xF019;
+	for (int i = 1; i < 32; i++) {
+		memory[i] = 0xF019;
+	}
 	CPU_p cpu = malloc (sizeof(CPU_s));
 	ALU_p alu = malloc (sizeof(ALU_s));
 	cpu->n = 1;
+	cpu->reg_file[0] = 2; //for jump
 	cpu->reg_file[1] = 5;
 	cpu->reg_file[2] = 15;
 	cpu->reg_file[3] = 0;
 	cpu->pc = 0;
 	cpu->n = 0, cpu->z = 0, cpu->p = 0;
+	printf("Value of R0: %d\r\n", cpu->reg_file[0]);
 	printf("Value of R1: %d\r\n", cpu->reg_file[1]);
 	printf("Value of R2: %d\r\n", cpu->reg_file[2]);
 	printf("Value of R3: %d\r\n", cpu->reg_file[3]);

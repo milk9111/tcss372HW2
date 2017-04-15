@@ -3,7 +3,9 @@ Connor Lundberg, James Roberts
 
 
 
+
 Value to Run: 0x1642
+Value of R0: 2
 Value of R1: 5
 Value of R2: 15
 Value of R3: 0
@@ -41,6 +43,7 @@ Executed ALU Reg R = ALU Reg A + ALU Reg B
 Here in STORE
 
 Stored ALU Reg R into DR 3
+Value of R0: 2
 Value of R1: 5
 Value of R2: 15
 Value of R3: 20
@@ -73,7 +76,10 @@ TRAP
 Executed Trap Vector #25
 
 
+
+
 Value to Run: 0x1662
+Value of R0: 2
 Value of R1: 5
 Value of R2: 15
 Value of R3: 0
@@ -111,6 +117,7 @@ Executed ALU Reg R = ALU Reg A + ALU Reg B
 Here in STORE
 
 Stored ALU Reg R into DR 3
+Value of R0: 2
 Value of R1: 5
 Value of R2: 15
 Value of R3: 7
@@ -146,6 +153,7 @@ Executed Trap Vector #25
 
 
 Value to Run: 0x5642
+Value of R0: 2
 Value of R1: 5
 Value of R2: 15
 Value of R3: 0
@@ -184,6 +192,7 @@ Executed ALU Reg R = ALU Reg A & ALU Reg B
 Here in STORE
 
 Stored ALU Reg R into DR 3
+Value of R0: 2
 Value of R1: 5
 Value of R2: 15
 Value of R3: 5
@@ -219,6 +228,7 @@ Executed Trap Vector #25
 
 
 Value to Run: 0x566F
+Value of R0: 2
 Value of R1: 5
 Value of R2: 15
 Value of R3: 0
@@ -257,6 +267,7 @@ Executed ALU Reg R = ALU Reg A & ALU Reg B
 Here in STORE
 
 Stored ALU Reg R into DR 3
+Value of R0: 2
 Value of R1: 5
 Value of R2: 15
 Value of R3: 5
@@ -292,6 +303,7 @@ Executed Trap Vector #25
 
 
 Value to Run: 0x967F
+Value of R0: 2
 Value of R1: 5
 Value of R2: 15
 Value of R3: 0
@@ -327,10 +339,284 @@ Executed ALU Reg R = !ALU Reg A
 Here in STORE
 
 Stored ALU Reg R into DR 3
+Value of R0: 2
 Value of R1: 5
 Value of R2: 15
 Value of R3: 65530
 n = 0, z = 0, p = 1
+
+
+Here in FETCH
+
+Contents of PC = 0x0001
+Contents of MAR = 0x0001
+Contents of PC = 0x0002
+Contents of M[MAR] = 0xF019
+Contents of MDR = 0xF019
+Contents of IR = 0xF019
+
+Here in DECODE
+
+Contents of Trap Vector 8 = 25
+
+Here in EVAL_ADDR
+
+Contents of MAR = 25
+
+Here in FETCH_OP
+
+
+Here in EXECUTE
+
+TRAP
+Executed Trap Vector #25
+
+
+
+
+Value to Run: 0x2004
+Value of R0: 2
+Value of R1: 5
+Value of R2: 15
+Value of R3: 0
+n = 0, z = 0, p = 0
+Here in FETCH
+
+Contents of PC = 0x0000
+Contents of MAR = 0x0000
+Contents of PC = 0x0001
+Contents of M[MAR] = 0x2004
+Contents of MDR = 0x2004
+Contents of IR = 0x2004
+
+Here in DECODE
+
+Contents of Rd = 0
+Contents of PC Offset 9 = 4
+
+Here in EVAL_ADDR
+
+Contents of MAR = 5
+
+Here in FETCH_OP
+
+Contents of MDR = 61465
+
+Here in EXECUTE
+
+
+Here in STORE
+
+Stored MDR into DR
+Value of R0: 61465
+Value of R1: 5
+Value of R2: 15
+Value of R3: 0
+n = 0, z = 0, p = 1
+
+
+Here in FETCH
+
+Contents of PC = 0x0001
+Contents of MAR = 0x0001
+Contents of PC = 0x0002
+Contents of M[MAR] = 0xF019
+Contents of MDR = 0xF019
+Contents of IR = 0xF019
+
+Here in DECODE
+
+Contents of Trap Vector 8 = 25
+
+Here in EVAL_ADDR
+
+Contents of MAR = 25
+
+Here in FETCH_OP
+
+
+Here in EXECUTE
+
+TRAP
+Executed Trap Vector #25
+
+
+
+
+Value to Run: 0x3605
+Value of R0: 2
+Value of R1: 5
+Value of R2: 15
+Value of R3: 0
+n = 0, z = 0, p = 0
+Here in FETCH
+
+Contents of PC = 0x0000
+Contents of MAR = 0x0000
+Contents of PC = 0x0001
+Contents of M[MAR] = 0x3605
+Contents of MDR = 0x3605
+Contents of IR = 0x3605
+
+Here in DECODE
+
+Contents of Rs = 3
+Contents of PC Offset 9 = 5
+
+Here in EVAL_ADDR
+
+Contents of MAR = 6
+
+Here in FETCH_OP
+
+Contents of MDR = 0
+
+Here in EXECUTE
+
+
+Here in STORE
+
+Stored MDR into M[MAR]
+Value of R0: 2
+Value of R1: 5
+Value of R2: 15
+Value of R3: 0
+n = 0, z = 0, p = 0
+
+
+Here in FETCH
+
+Contents of PC = 0x0001
+Contents of MAR = 0x0001
+Contents of PC = 0x0002
+Contents of M[MAR] = 0xF019
+Contents of MDR = 0xF019
+Contents of IR = 0xF019
+
+Here in DECODE
+
+Contents of Trap Vector 8 = 25
+
+Here in EVAL_ADDR
+
+Contents of MAR = 25
+
+Here in FETCH_OP
+
+
+Here in EXECUTE
+
+TRAP
+Executed Trap Vector #25
+
+
+
+
+Value to Run: 0xC000
+Value of R0: 2
+Value of R1: 5
+Value of R2: 15
+Value of R3: 0
+n = 0, z = 0, p = 0
+Here in FETCH
+
+Contents of PC = 0x0000
+Contents of MAR = 0x0000
+Contents of PC = 0x0001
+Contents of M[MAR] = 0xC000
+Contents of MDR = 0xC000
+Contents of IR = 0xC000
+
+Here in DECODE
+
+Contents of BaseR = 0
+
+Here in EVAL_ADDR
+
+Contents of MAR = 0
+
+Here in FETCH_OP
+
+
+Here in EXECUTE
+
+
+JMP
+Executed PC = BaseR
+
+Here in STORE
+
+Value of R0: 2
+Value of R1: 5
+Value of R2: 15
+Value of R3: 0
+n = 0, z = 0, p = 0
+
+
+Here in FETCH
+
+Contents of PC = 0x0002
+Contents of MAR = 0x0002
+Contents of PC = 0x0003
+Contents of M[MAR] = 0xF019
+Contents of MDR = 0xF019
+Contents of IR = 0xF019
+
+Here in DECODE
+
+Contents of Trap Vector 8 = 25
+
+Here in EVAL_ADDR
+
+Contents of MAR = 25
+
+Here in FETCH_OP
+
+
+Here in EXECUTE
+
+TRAP
+Executed Trap Vector #25
+
+
+
+
+Value to Run: 0x0E14
+Value of R0: 2
+Value of R1: 5
+Value of R2: 15
+Value of R3: 0
+n = 0, z = 0, p = 0
+Here in FETCH
+
+Contents of PC = 0x0000
+Contents of MAR = 0x0000
+Contents of PC = 0x0001
+Contents of M[MAR] = 0x0E14
+Contents of MDR = 0x0E14
+Contents of IR = 0x0E14
+
+Here in DECODE
+
+Contents of PC Offset 9 = 20
+
+Here in EVAL_ADDR
+
+Contents of MAR = 0
+
+Here in FETCH_OP
+
+
+Here in EXECUTE
+
+
+Here in STORE
+
+Value of R0: 2
+Value of R1: 5
+Value of R2: 15
+Value of R3: 0
+n = 0, z = 0, p = 0
 
 
 Here in FETCH
